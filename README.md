@@ -1,10 +1,25 @@
 # AI Assistant
-## Description
-## How to run
 
-    ´´´
-    uvicorn app.main:app --reload
-    ´´´
+
+## Description
+Client
+  ↓
+FastAPI (/chat/send)
+  ↓
+Redis Stream (chat:incoming)
+  ↓
+AI Worker (consumer group)
+  ↓
+Redis Stream (chat:outgoing)
+  ↓
+API / WebSocket
+
+
+## How to run
+docker compose up -d
+uvicorn app.main:app --reload
+
+
 ## Repo Structure
 ai-assistant/
 ├── app/
