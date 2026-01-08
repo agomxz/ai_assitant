@@ -20,6 +20,7 @@ def publish(event: dict):
 
 
 
+# ---------- PubSub ----------
 def new_publish(channel: str, message: dict):
     print('New Publishing event msg to redis:', message)
     redis_client.publish(channel, json.dumps({"data": json.dumps(message)}))
@@ -29,6 +30,20 @@ def new_subscribe(channel: str):
     pubsub = redis_client.pubsub()
     pubsub.subscribe(channel)
     return pubsub
+
+
+
+# ---------- Persistence ----------
+def save_message(session_id: str, message: dict):
+    key = f"chat:history:{session_id}"
+    redis_client.rpush(key, json.dumps(message))
+
+def get_history(session_id: str):
+    key = f"chat:history:{session_id}"
+    messages = redis_client.lrange(key, 0, -1)
+    return [json.loads(m) for m in messages]
+
+
 
 
 def consume(group: str, consumer: str):

@@ -4,6 +4,7 @@ from uuid import uuid4
 from app.core.event_bus import (
     consume,
     new_subscribe,
+    new_publish,
     ack,
     publish_response
 )
@@ -17,7 +18,7 @@ def start_ai_worker():
     print('AI WORKER STARTED')
     pubsub = new_subscribe("chat:incoming")
 
-    print("🤖 AI worker started, listening for messages...")
+    print("AI worker started, listening for messages...")
 
     for event in pubsub.listen():
         if event["type"] != "message":
@@ -25,4 +26,5 @@ def start_ai_worker():
 
         data = json.loads(event["data"])
 
-        print("📨 Received from Redis:", data)
+        print("Received from Redis:", data)
+        new_publish("chat:ai_out", data)
