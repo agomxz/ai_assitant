@@ -2,7 +2,7 @@ import json
 import redis
 import os
 
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
 redis_client = redis.Redis(
@@ -13,11 +13,6 @@ redis_client = redis.Redis(
 
 INCOMING_STREAM = "chat:incoming"
 OUTGOING_STREAM = "chat:outgoing"
-
-# def publish(event: dict):
-#     print('Publishing event msg to redis:', event)
-#     redis_client.xadd(INCOMING_STREAM, {"data": json.dumps(event)})
-
 
 
 def publish(channel: str, message: dict):
@@ -39,21 +34,3 @@ def get_history(session_id: str):
     key = f"chat:history:{session_id}"
     messages = redis_client.lrange(key, 0, -1)
     return [json.loads(m) for m in messages]
-
-
-
-
-# def consume(group: str, consumer: str):
-#     return redis_client.xreadgroup(
-#         groupname=group,
-#         consumername=consumer,
-#         streams={INCOMING_STREAM: ">"},
-#         count=1,
-#         block=5000
-#     )
-
-# def ack(stream: str, group: str, message_id: str):
-#     redis_client.xack(stream, group, message_id)
-
-# def publish_response(event: dict):
-#     redis_client.xadd(OUTGOING_STREAM, {"data": json.dumps(event)})
