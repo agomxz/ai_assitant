@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from uuid import uuid4
-from app.core.event_bus import publish, new_publish
+from app.core.event_bus import publish, save_message
 
 router = APIRouter(prefix="/chat")
 
@@ -11,13 +11,14 @@ def send_message(content: str, conversation_id: str | None = None):
     
     event = {
         "conversation_id": conversation_id or str(uuid4()),
+        "session_id": conversation_id or str(uuid4()),
         "message_id": str(uuid4()),
         "sender": "user",
         "content": content,
     }
 
-    #publish(event)
-    new_publish("chat:incoming", event)
+    publish("chat:incoming", event)
+    save_message(event["session_id"], event)
 
     return {
         "status": "published",

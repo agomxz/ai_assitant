@@ -1,5 +1,18 @@
 # AI Assistant
 
+This project is a simplle AI assistant that uses Redis Streams in order to implement a pub/sub messaging system
+
+## Tech Stack
+- FastAPI
+- Redis
+- Python
+
+
+## How to run
+1. docker compose up -d
+2. uvicorn app.main:app --reload
+3. wscat -c ws://localhost:8000/ws/123 
+
 
 ## Description
 Client
@@ -13,11 +26,6 @@ AI Worker (consumer group)
 Redis Stream (chat:outgoing)
   ↓
 API / WebSocket
-
-
-## How to run
-docker compose up -d
-uvicorn app.main:app --reload
 
 
 ## Repo Structure
@@ -54,4 +62,3 @@ ai-assistant/
 ├── .env
 ├── .gitignore
 └── README.md
-
