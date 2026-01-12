@@ -20,7 +20,7 @@ Expose a websocket to consume the messages of the AI Agent
 
 
 ## Architecture Overview
-```markdown
+
 ```mermaid
 erDiagram
 flowchart TB
