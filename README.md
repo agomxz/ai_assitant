@@ -22,18 +22,13 @@ Expose a websocket to consume the messages of the AI Agent
 ## Architecture Overview
 
 ```mermaid
-erDiagram
 flowchart TB
-    Client[Client] 
-        --> API[FastAPI<br/>(/chat/send)]
-    API 
-        --> RedisIn[Redis Stream<br/>(chat:incoming)]
-    RedisIn 
-        --> Worker[AI Worker]
-    Worker 
-        --> RedisOut[Redis Stream<br/>(chat:outgoing)]
-    RedisOut 
-        --> WS[WebSocket]
+    Client --> API["FastAPI (/chat/send)"]
+    API --> RedisIn["Redis Stream (chat:incoming)"]
+    RedisIn --> Worker["AI Worker"]
+    Worker --> RedisOut["Redis Stream (chat:outgoing)"]
+    RedisOut --> WS["WebSocket"]
+
 ```
 
 
