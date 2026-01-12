@@ -60,8 +60,8 @@ sequenceDiagram
 flowchart TB
     Root["ai-assistant/"]
 
-    Root --> App["app/"]
-    Root --> Tests["tests/"]
+    Root --> App
+    Root --> Tests
     Root --> Req["requirements.txt"]
     Root --> Env[".env"]
     Root --> Gitignore[".gitignore"]
@@ -70,14 +70,6 @@ flowchart TB
     subgraph App["app/"]
         Main["main.py\n(FastAPI entrypoint)"]
         Config["config.py\n(env vars & settings)"]
-
-        App --> API["api/"]
-        App --> Core["core/"]
-        App --> Models["models/"]
-        App --> Services["services/"]
-        App --> Utils["utils/"]
-        App --> Main
-        App --> Config
 
         subgraph API["api/"]
             ChatAPI["chat.py\n(send / receive endpoints)"]
@@ -104,4 +96,5 @@ flowchart TB
     subgraph Tests["tests/"]
         TestChat["test_chat.py"]
     end
+
 ```
