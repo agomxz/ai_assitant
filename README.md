@@ -1,15 +1,20 @@
 # AI Assistant
 
 This project is a simplle AI assistant that uses Redis Streams in order to implement a pub/sub messaging system
+For answer the chat uses Ollama with OpenAI model (gpt-oss)
+Expose a websocket to consume the messages of the AI Agent
 
 ## Tech Stack
 - FastAPI
 - Redis
 - Python
+- Docker
+- Ollama
 
 
 ## How to run
 1. docker compose up -d
+2. ollama run gpt-oss
 2. uvicorn app.main:app --reload
 3. wscat -c ws://localhost:8000/ws/123 
 

@@ -1,39 +1,55 @@
 import json
 import asyncio
 from fastapi import APIRouter, WebSocket
-from app.core.event_bus import new_subscribe
+from app.core.event_bus import subscribe, save_message
+from app.logger import setup_logger
+from app.config import settings 
+from app.services.ai_service import generate_response
+
+logger = setup_logger(__name__)
 
 router = APIRouter()
 
 @router.websocket("/ws/{session_id}")
-async def chat_ws(websocket: WebSocket, session_id: str):
-    await websocket.accept()
-    pubsub = new_subscribe("chat:ai_out")
+async def chat_ws(websocket: WebSocket, session_id: str) -> None:
+    """
+    This endpoint is to consume messages from redis stream in order to push them to the client
+    """    
     try:
-        print("WebSocket connected for session:", session_id)
+        logger.info(f"WebSocket connected for session_id [{session_id}]")
+        await websocket.accept()
+        pubsub = subscribe(settings.outgoing_stream)
         await websocket.send_json({"status": "connected"})
 
         while True:
             message = pubsub.get_message(ignore_subscribe_messages=True)
 
             if message:
-                print("Received from Redis:", message)
-                level1 = json.loads(message["data"])
 
-                level2 = json.loads(level1["data"])
+                data_response = json.loads(message["data"])
+                data_response = json.loads(data_response["data"])
 
-                data = json.loads(level2["data"])
+                data = json.loads(data_response["data"])
 
-                #data = json.loads(message["data"]["data"])
+                logger.info(f"Received message for session_id [{session_id}]: {data}")
 
-                # Only send messages for this session
                 if data["session_id"] == session_id:
-                    print("Sending to WebSocket:", data)
-                    await websocket.send_json({"content": data['content']})
+
+                    response = await generate_response(data['session_id'], data['content'])
+
+                    assistant_response = {
+                        "session_id": session_id,
+                        "sender": "assistant",
+                        "content": response
+                    }
+
+                    save_message(session_id, assistant_response)
+                    await websocket.send_json({"content": response})
+                    logger.info(f"Sended response ok")
 
             await asyncio.sleep(0.01)
 
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error("WebSocket connection closed", e)
     finally:
         pubsub.close()

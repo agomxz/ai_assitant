@@ -1,13 +1,13 @@
 # app/core/logger.py
 import logging
-from app.core.config import settings
+from app.config import settings
 
 
 def setup_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
 
     if logger.handlers:
-        return logger  # Prevent duplicate logs
+        return logger
 
     level = getattr(logging, settings.log_level.upper(), logging.INFO)
     logger.setLevel(level)

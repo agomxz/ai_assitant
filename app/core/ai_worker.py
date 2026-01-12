@@ -1,17 +1,18 @@
 import json
 from app.core.event_bus import (
-    new_subscribe,
+    subscribe,
     publish,
 )
-from app.services.ai_service import generate_response
+from app.logger import setup_logger
+from app.config import settings
 
+logger = setup_logger(__name__)
 
 def start_ai_worker():
 
-    print('AI WORKER STARTED')
-    pubsub = new_subscribe("chat:incoming")
-
-    print("AI worker started, listening for messages...")
+    logger.info('AI Worker starting....')
+    pubsub = subscribe(settings.incoming_stream)
+    logger.info("Connected to Redis Stream")
 
     for event in pubsub.listen():
         if event["type"] != "message":
@@ -19,5 +20,4 @@ def start_ai_worker():
 
         data = json.loads(event["data"])
 
-        print("Received from Redis:", data)
-        publish("chat:ai_out", data)
+        publish(settings.outgoing_stream, data)
