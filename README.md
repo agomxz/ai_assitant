@@ -19,18 +19,22 @@ Expose a websocket to consume the messages of the AI Agent
 3. wscat -c ws://localhost:8000/ws/123 
 
 
-## Description
-Client
-  ↓
-FastAPI (/chat/send)
-  ↓
-Redis Stream (chat:incoming)
-  ↓
-AI Worker (consumer group)
-  ↓
-Redis Stream (chat:outgoing)
-  ↓
-API / WebSocket
+## Architecture Overview
+```markdown
+```mermaid
+erDiagram
+flowchart TB
+    Client[Client] 
+        --> API[FastAPI<br/>(/chat/send)]
+    API 
+        --> RedisIn[Redis Stream<br/>(chat:incoming)]
+    RedisIn 
+        --> Worker[AI Worker]
+    Worker 
+        --> RedisOut[Redis Stream<br/>(chat:outgoing)]
+    RedisOut 
+        --> WS[WebSocket]
+```
 
 
 ## Repo Structure
