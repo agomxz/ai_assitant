@@ -33,6 +33,27 @@ graph TD
 
 ```
 
+## Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant API as FastAPI API
+    participant R as Redis Event Bus
+    participant W as AI Worker
+    participant AI as AI Service
+    participant WS as WebSocket
+
+    U->>API: Send message
+    API->>R: Publish event (chat:incoming)
+    W->>R: Consume event
+    W->>AI: Generate AI response
+    AI-->>W: AI response
+    W->>R: Publish event (chat:outgoing)
+    WS->>R: Subscribe to outgoing events
+    WS-->>U: Send response via WebSocket
+```mermaid
+
 
 ## Repo Structure
 ai-assistant/
