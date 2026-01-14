@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch
 
@@ -14,10 +13,7 @@ def test_send_message_success(mock_publish, mock_save_message):
     Test successful message publishing
     """
 
-    payload = {
-        "content": "Hello world",
-        "session_id": "test-session-123"
-    }
+    payload = {"content": "Hello world", "session_id": "test-session-123"}
 
     response = client.post("/chat/send", params=payload)
 
@@ -38,9 +34,7 @@ def test_send_message_failure(mock_publish):
     Test failure when publish raises an exception
     """
 
-    payload = {
-        "content": "Hello world"
-    }
+    payload = {"content": "Hello world"}
 
     response = client.post("/chat/send", params=payload)
 

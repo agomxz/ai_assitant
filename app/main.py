@@ -13,6 +13,7 @@ app.include_router(websocket_router)
 Run the AI worker in a separate thread, to consume messages from Redis
 """
 
+
 @app.on_event("startup")
 def startup():
     Thread(target=start_ai_worker, daemon=True).start()

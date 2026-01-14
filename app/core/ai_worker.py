@@ -8,9 +8,10 @@ from app.config import settings
 
 logger = setup_logger(__name__)
 
+
 def start_ai_worker():
 
-    logger.info('AI Worker starting....')
+    logger.info("AI Worker starting....")
     pubsub = subscribe(settings.incoming_stream)
     logger.info("Connected to Redis Stream")
 

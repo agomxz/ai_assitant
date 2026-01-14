@@ -3,18 +3,20 @@ import asyncio
 from fastapi import APIRouter, WebSocket
 from app.core.event_bus import subscribe, save_message
 from app.logger import setup_logger
-from app.config import settings 
+from app.config import settings
 from app.services.ai_service import generate_response
 
 logger = setup_logger(__name__)
 
 router = APIRouter()
 
+
 @router.websocket("/ws/{session_id}")
 async def chat_ws(websocket: WebSocket, session_id: str) -> None:
     """
-    This endpoint is to consume messages from redis stream in order to push them to the client
-    """    
+    This endpoint is to consume messages from redis
+    in order to push them to the client
+    """
     try:
         logger.info(f"WebSocket connected for session_id [{session_id}]")
         await websocket.accept()
@@ -31,21 +33,23 @@ async def chat_ws(websocket: WebSocket, session_id: str) -> None:
 
                 data = json.loads(data_response["data"])
 
-                logger.info(f"Received message for session_id [{session_id}]: {data}")
+                logger.info(f"Message session_id [{session_id}]: {data}")
 
                 if data["session_id"] == session_id:
 
-                    response = await generate_response(data['session_id'], data['content'])
+                    response = await generate_response(
+                        data["session_id"], data["content"]
+                    )
 
                     assistant_response = {
                         "session_id": session_id,
                         "sender": "assistant",
-                        "content": response
+                        "content": response,
                     }
 
                     save_message(session_id, assistant_response)
                     await websocket.send_json({"content": response})
-                    logger.info(f"Sended response ok")
+                    logger.info("Sended response ok")
 
             await asyncio.sleep(0.01)
 

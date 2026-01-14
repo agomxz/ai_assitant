@@ -1,4 +1,4 @@
-AGENT_PROMPT="You are a helpful assistant."
+AGENT_PROMPT = "You are a helpful assistant."
 
 TOOL_SYSTEM_PROMPT = """
 You are a helpful assistant.

@@ -1,5 +1,6 @@
 import redis
 
+
 def clean_redis_db(
     host="localhost",
     port=6379,
@@ -17,6 +18,6 @@ def clean_redis_db(
     r.flushdb()
     print(f"Redis DB {db} cleaned successfully")
 
+
 if __name__ == "__main__":
     clean_redis_db()
-

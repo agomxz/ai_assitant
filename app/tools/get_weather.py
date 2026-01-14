@@ -1,12 +1,13 @@
 import requests
 
+
 def get_weather(latitude: float, longitude: float) -> str:
     url = "https://api.open-meteo.com/v1/forecast"
 
     params = {
         "latitude": latitude,
         "longitude": longitude,
-        "current_weather": True
+        "current_weather": True,
     }
 
     response = requests.get(url, params=params, timeout=10)

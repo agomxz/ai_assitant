@@ -8,15 +8,16 @@ router = APIRouter(prefix="/chat")
 
 logger = setup_logger(__name__)
 
+
 @router.post("/send")
 def send_message(content: str, session_id: str | None = None):
     """
     This endpoint is to publish a message to the redis stream
     """
     try:
-    
-        logger.info(f"Sending endpoint session_id [{session_id}] and content [{content}]")
-        
+
+        logger.info(f"session_id [{session_id}] and content [{content}]")
+
         event = {
             "session_id": session_id or str(uuid4()),
             "message_id": str(uuid4()),

@@ -2,11 +2,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 import os
 
-load_dotenv() 
+load_dotenv()
+
 
 class Settings(BaseSettings):
     """
-    This class is to load the environment variables and use them in the application
+    This class is to load the environment variables
+    and use them in the application
     """
 
     app_name: str = "app"

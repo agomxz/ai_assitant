@@ -6,17 +6,17 @@ from app.logger import setup_logger
 logger = setup_logger(__name__)
 
 redis_client = redis.Redis(
-    host=settings.redis_host,
-    port=settings.redis_port,
-    decode_responses=True
+    host=settings.redis_host, port=settings.redis_port, decode_responses=True
 )
+
 
 def publish(channel: str, message: dict):
     """
     Method to create output message to websocket
     """
-    logger.info('New message publishing to redis stream:')
+    logger.info("New message publishing to redis stream:")
     redis_client.publish(channel, json.dumps({"data": json.dumps(message)}))
+
 
 def subscribe(channel: str):
     """
@@ -25,6 +25,7 @@ def subscribe(channel: str):
     pubsub = redis_client.pubsub()
     pubsub.subscribe(channel)
     return pubsub
+
 
 def save_message(session_id: str, message: dict):
     "Store message in redis"

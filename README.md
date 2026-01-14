@@ -13,13 +13,13 @@ Expose a websocket to consume the messages of the AI Agent
 
 
 ## How to run
-1. docker compose up -d
-2. ollama run gpt-oss
-2. uvicorn app.main:app --reload
-3. wscat -c ws://localhost:8000/ws/123 
+1. ```docker compose up -d ```
+2. ```ollama run gpt-oss```
+3. ```uvicorn app.main:app --reload```
+4. ```wscat -c ws://localhost:8000/ws/{session_id}```
 
 
-## Architecture Overview
+## Overview
 
 ```mermaid
 graph TD
