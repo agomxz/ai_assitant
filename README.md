@@ -12,9 +12,13 @@ Expose a websocket to consume the messages of the AI Agent
 - Ollama
 
 
+## Pre-requisites
+- Ollama installed and running
+
+
 ## How to run
-1. ```docker compose up -d ```
-2. ```ollama run gpt-oss```
+1. ```ollama run gpt-oss```
+2. ```docker compose up```
 3. ```uvicorn app.main:app --reload```
 4. ```wscat -c ws://localhost:8000/ws/{session_id}```
 

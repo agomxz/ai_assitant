@@ -1,5 +1,3 @@
-AGENT_PROMPT = "You are a helpful assistant."
-
 TOOL_SYSTEM_PROMPT = """
 You are a helpful assistant.
 Use the available tools when you need to obtain external information or perform calculations.

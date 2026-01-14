@@ -12,22 +12,23 @@ from app.logger import setup_logger
 from app.services.prompt import TOOL_SYSTEM_PROMPT
 from app.core.event_bus import get_history
 from app.tools.get_weather import get_weather
+from datetime import datetime
 
 
 logger = setup_logger(__name__)
 
 
 @tool
-def weather(latitude: float, longitude: float) -> str:
+def tool_get_weather(latitude: float, longitude: float) -> str:
     """Get current weather with latitude and longitude"""
+    logger.info('Getting current weather from API')
     return get_weather(latitude, longitude)
 
 
 @tool
-def obtener_fecha_actual() -> str:
-    """Devuelve la fecha y hora actual en formato ISO"""
-    from datetime import datetime
-
+def tool_current_date_time() -> str:
+    """Get current date and time"""
+    logger.info('Getting toll current datetime')
     return datetime.now().isoformat()
 
 
@@ -38,7 +39,7 @@ llm = ChatOpenAI(
     temperature=0.2,
 )
 
-tools = [weather, obtener_fecha_actual]
+tools = [tool_get_weather, tool_current_date_time]
 
 llm = llm.bind_tools(tools)
 
@@ -46,7 +47,7 @@ llm = llm.bind_tools(tools)
 def build_messages_from_history(
     session_id: str,
     prompt: str,
-):
+)->list:
     """
     Create context of the chat conversation with the history of redis messages
     """
@@ -54,9 +55,6 @@ def build_messages_from_history(
     logger.info(f"Build messages from history for session_id [{session_id}]")
 
     history = get_history(session_id)
-
-    # for i in history:
-    #     logger.info(i)
 
     messages: list[BaseMessage] = [
         SystemMessage(content=TOOL_SYSTEM_PROMPT),
@@ -75,26 +73,28 @@ def build_messages_from_history(
 
 
 async def generate_response(session_id: str | None, content: str) -> str:
+    """
+    Build reponse to user
+    Exists two tools:
+        - tool_get_weather
+        - tool_current_date_time
+    """
     logger.info(f"Generating for session_id [{session_id}]")
 
     messages = build_messages_from_history(session_id, content)
 
     try:
         response = await llm.ainvoke(messages)
-
-        print(response)
-
+        
         if hasattr(response, "tool_calls") and response.tool_calls:
             logger.info("Response with tool calls")
 
             for tool_call in response.tool_calls:
-                logger.info(f"Tool call type: {type(tool_call)}")
-                logger.info(f"Tool call: {tool_call}")
+                logger.info(f"Tool to call: {tool_call}")
 
                 tool_name = tool_call["name"]
                 tool_args = tool_call["args"]
 
-                # Find the tool function
                 tool_func = next((t for t in tools if t.name == tool_name), None)
 
                 if tool_func:
@@ -106,6 +106,7 @@ async def generate_response(session_id: str | None, content: str) -> str:
                             content=str(tool_result),
                         )
                     )
+
 
             # Get a new response with the tool results
             response = await llm.ainvoke(messages)

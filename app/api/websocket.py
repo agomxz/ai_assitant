@@ -49,7 +49,7 @@ async def chat_ws(websocket: WebSocket, session_id: str) -> None:
 
                     save_message(session_id, assistant_response)
                     await websocket.send_json({"content": response})
-                    logger.info("Sended response ok")
+                    logger.info("Sended response")
 
             await asyncio.sleep(0.01)
 
