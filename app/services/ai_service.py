@@ -21,14 +21,14 @@ logger = setup_logger(__name__)
 @tool
 def tool_get_weather(latitude: float, longitude: float) -> str:
     """Get current weather with latitude and longitude"""
-    logger.info('Getting current weather from API')
+    logger.info("Getting current weather from API")
     return get_weather(latitude, longitude)
 
 
 @tool
 def tool_current_date_time() -> str:
     """Get current date and time"""
-    logger.info('Getting toll current datetime')
+    logger.info("Getting toll current datetime")
     return datetime.now().isoformat()
 
 
@@ -47,7 +47,7 @@ llm = llm.bind_tools(tools)
 def build_messages_from_history(
     session_id: str,
     prompt: str,
-)->list:
+) -> list:
     """
     Create context of the chat conversation with the history of redis messages
     """
@@ -85,7 +85,7 @@ async def generate_response(session_id: str | None, content: str) -> str:
 
     try:
         response = await llm.ainvoke(messages)
-        
+
         if hasattr(response, "tool_calls") and response.tool_calls:
             logger.info("Response with tool calls")
 
@@ -106,7 +106,6 @@ async def generate_response(session_id: str | None, content: str) -> str:
                             content=str(tool_result),
                         )
                     )
-
 
             # Get a new response with the tool results
             response = await llm.ainvoke(messages)

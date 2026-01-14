@@ -1,6 +1,5 @@
 import redis
 
-
 def clean_redis_db(
     host="localhost",
     port=6379,

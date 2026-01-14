@@ -1,12 +1,11 @@
 import redis
 import sys
 
-# Configuration - Update these if needed
 HOST = "localhost"
 PORT = 6379
-DB = 0  # Change to your database index
-PASSWORD = None  # Set if your Redis requires authentication
-DECODE = True  # Keep True for readable strings
+DB = 0  
+PASSWORD = None 
+DECODE = True  
 
 
 def connect_to_redis():
